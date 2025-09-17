@@ -1,0 +1,88 @@
+package com.example.likelion13th_spring.service;
+
+import com.example.likelion13th_spring.domain.Member;
+import com.example.likelion13th_spring.domain.Product;
+import com.example.likelion13th_spring.dto.request.ProductDeleteRequestDto;
+import com.example.likelion13th_spring.dto.request.ProductRequestDto;
+import com.example.likelion13th_spring.dto.request.ProductUpdateRequestDto;
+import com.example.likelion13th_spring.dto.response.ProductResponseDto;
+import com.example.likelion13th_spring.repository.MemberRepository;
+import com.example.likelion13th_spring.repository.ProductRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class ProductService {
+    private final ProductRepository productRepository;
+    private final MemberRepository memberRepository;
+
+    @Transactional
+    public ProductResponseDto createProduct(ProductRequestDto dto) {
+        Member member = memberRepository.findById(dto.getMemberId())
+            .orElseThrow( () -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        if (!member.isSeller()) {
+            throw new IllegalArgumentException("상품은 판매자만 등록할 수 있습니다.");
+        }
+            Product product = dto.toEntity(member);
+            Product saved = productRepository.save(product);
+            return new ProductResponseDto(saved.getId(), saved.getName(), saved.getPrice(), saved.getStock(), saved.getDescription());
+    }
+
+    // 모든 상품 가져오기
+    public List<ProductResponseDto> getAllProducts() {
+        return productRepository.findAll().stream()
+            .map(ProductResponseDto::fromEntity)
+            .toList();
+    }
+
+    // 특정 상품 가져오기
+    public ProductResponseDto getProductById(Long id) {
+        Product product = productRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+        return ProductResponseDto.fromEntity(product);
+    }
+
+    @Transactional
+    public ProductResponseDto updateProduct(Long productId, ProductUpdateRequestDto dto) {
+        // 사용자 조회
+        Member member = memberRepository.findById(dto.getMemberId())
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        // 상품 조회
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+
+        // 판매자 권한 확인
+        if (!product.getSeller().getId().equals(member.getId())) {
+            throw new IllegalArgumentException("본인의 상품만 수정할 수 있습니다.");
+        }
+
+        // 상품 수정
+        product.update(dto.getName(), dto.getPrice(), dto.getStock(), dto.getDescription());
+
+        return ProductResponseDto.fromEntity(product);
+    }
+
+    @Transactional
+    public void deleteProduct(Long productId, ProductDeleteRequestDto dto) {
+        // 사용자 조회
+        Member seller = memberRepository.findById(dto.getMemberId())
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 상품 조회
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+
+        // 권한 확인
+        if (!product.getSeller().getId().equals(seller.getId())) {
+            throw new IllegalArgumentException("본인의 상품만 삭제할 수 있습니다.");
+        }
+
+        // 삭제
+        productRepository.delete(product);
+    }
+}
