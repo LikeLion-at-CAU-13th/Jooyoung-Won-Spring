@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,5 +34,12 @@ public class Orders extends BaseTimeEntity {
 
     @OneToOne(mappedBy = "orders", cascade = CascadeType.ALL)
     private Coupon coupon;
+
+    @OneToOne(mappedBy = "orders", cascade = CascadeType.ALL)
+    private ShippingAddress shippingAddress;
+
+    public void addShippingAddress(ShippingAddress shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
 }
 
