@@ -94,7 +94,7 @@ public class OrdersService {
     }
 
     @Transactional
-    public void deleteOrders(Long id, OrdersDeleteRequestDto dto) {
+    public void deleteOrders(Long id) {
         Orders orders = ordersRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
 
