@@ -1,8 +1,7 @@
-package com.example.likelion13th_spring.Controller;
+package com.example.likelion13th_spring.controller;
 
 import com.example.likelion13th_spring.dto.request.*;
 import com.example.likelion13th_spring.dto.response.OrdersResponseDto;
-import com.example.likelion13th_spring.dto.response.ProductResponseDto;
 import com.example.likelion13th_spring.service.OrdersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
