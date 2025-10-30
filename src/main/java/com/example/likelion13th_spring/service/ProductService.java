@@ -85,4 +85,12 @@ public class ProductService {
         // 삭제
         productRepository.delete(product);
     }
+
+    // 특정 상품 가져오기
+    public List<ProductResponseDto> getMyProducts(String name) {
+        return productRepository.findProductsBySellerName(name)
+                .stream()
+                .map(ProductResponseDto::fromEntity)
+                .toList();
+    }
 }
