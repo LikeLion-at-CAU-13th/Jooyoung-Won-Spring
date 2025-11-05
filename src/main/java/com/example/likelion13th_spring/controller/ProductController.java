@@ -1,4 +1,4 @@
-package com.example.likelion13th_spring.Controller;
+package com.example.likelion13th_spring.controller;
 
 import com.example.likelion13th_spring.dto.request.ProductDeleteRequestDto;
 import com.example.likelion13th_spring.dto.request.ProductRequestDto;

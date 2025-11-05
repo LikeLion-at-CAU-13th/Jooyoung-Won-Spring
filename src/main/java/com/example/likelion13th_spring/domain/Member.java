@@ -20,6 +20,7 @@ public class Member {
     private Long id;
 
     private String name;
+    private String password;
     private String address;
     private String email;
     private String phoneNumber;
@@ -44,9 +45,10 @@ public class Member {
     }
 
     @Builder
-    public Member(String name, String address, String email, String phoneNumber,
+    public Member(String name, String password, String address, String email, String phoneNumber,
                   Role role, Boolean isAdmin, Integer deposit, Integer age) {
         this.name = name;
+        this.password = password;
         this.address = address;
         this.email = email;
         this.phoneNumber = phoneNumber;
