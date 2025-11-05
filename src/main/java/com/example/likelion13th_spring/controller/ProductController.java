@@ -1,5 +1,6 @@
 package com.example.likelion13th_spring.controller;
 
+import com.example.likelion13th_spring.config.PrincipalHandler;
 import com.example.likelion13th_spring.dto.request.ProductDeleteRequestDto;
 import com.example.likelion13th_spring.dto.request.ProductRequestDto;
 import com.example.likelion13th_spring.dto.request.ProductUpdateRequestDto;
@@ -47,5 +48,13 @@ public class ProductController {
                                                 @RequestBody ProductDeleteRequestDto dto) {
         productService.deleteProduct(id, dto);
         return ResponseEntity.ok("상품이 성공적으로 삭제되었습니다.");
+    }
+
+
+    // 내가 판매자인 상품 조회
+    @GetMapping("/my")
+    public ResponseEntity<List<ProductResponseDto>> getMyProducts() {
+        String name = PrincipalHandler.getUsernameFromPrincipal();
+        return ResponseEntity.ok(productService.getMyProducts(name));
     }
 }
